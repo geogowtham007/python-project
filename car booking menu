@@ -1,0 +1,66 @@
+def car_booking_menu():
+    print("------------------------------------------------")
+    x = '-------------WELCOME TO CAR BOOKING SYSTEM-------------'
+    print(x)
+    print("------------------------------------------------")
+    while True:
+        print("1. REGISTER\n2. LOGIN\n3. EXIT")
+        s = int(input("Enter your choice: "))
+        
+        if s == 1:
+            print("Please enter your details")
+            name = input("Enter your name: ")
+            ph = input("Enter your phone number: ")
+            e = input("Enter your email: ")
+            p1 = input("Enter your password: ")
+            p2 = input("Confirm your password: ")
+            
+            if p1 != p2:
+                print("Passwords do not match. Try again.")
+                continue
+            
+            f1 = f"{name}.txt"
+            with open(f1, 'w') as s1:
+                s1.write(f"{name},{ph},{e},{p1}")
+            print("Registration successful!")
+        
+        elif s == 2:
+            name = input("Enter your name: ")
+            d = f"{name}.txt"
+            try:
+                with open(d, 'r') as ch:
+                    v = ch.read()
+                    val = v.split(",")
+                    email = input("Enter your email: ")
+                ps = input("Enter your password: ")
+                if email == val[2] and ps == val[3]:
+                    print("Login success")
+                    while True:
+                        print("\n--- Car Booking Menu ---")
+                        print("1. Book a Car\n2. View Booking\n3. Logout")
+                        choice = int(input("Enter your choice: "))
+                        
+                        if choice == 1:
+                            car = input("Enter car model (e.g., Sedan, SUV): ")
+                            date = input("Enter booking date (DD/MM/YYYY): ")
+                            print(f"Car {car} booked successfully for {date}!")
+                        elif choice == 2:
+                            print("Feature under development...")
+                        elif choice == 3:
+                            print("Logged out successfully.")
+                            break
+                        else:
+                            print("Invalid choice")
+                else:
+                    print("Invalid email or password")
+            except FileNotFoundError:
+                print("User not registered. Please register first.")
+        
+        elif s == 3:
+            print("Thank you for using Car Booking System!")
+            break
+        
+        else:
+            print("Invalid choice")
+
+car_booking_menu()
