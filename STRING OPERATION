@@ -1,0 +1,175 @@
+
+#1.Count the number of characters in a string (without len())
+s =str(input("enter a name:"))
+count = 0
+for _ in s:
+    count += 1
+print(count)
+#2.Count vowels and consonants
+s = str(input("enter a name:"))
+vowels = "aeiouAEIOU"
+v_count = c_count = 0
+for ch in s:
+    if ch.isalpha():
+        if ch in vowels:
+            v_count += 1
+        else:
+            c_count += 1
+print("Vowels:", v_count, "Consonants:", c_count)
+#3.Reverse a string (without slicing)
+s = "hello"
+rev = ""
+for ch in s:
+    rev = ch + rev
+print(rev)
+
+#4.Check whether a string is empty
+s = ""
+if s == "":
+    print("Empty")
+else:
+    print("Not empty")
+
+#5.Convert lowercase to uppercase (without .upper())
+s =str(input("enter a name:"))
+result = ""
+for ch in s:
+    if 'a' <= ch <= 'z':
+        result += chr(ord(ch) - 32)
+    else:
+        result += ch
+print(result)
+
+#6.Count occurrences of a character
+s =str(input("enter a name:"))
+char = "a"
+count = 0
+for ch in s:
+    if ch == char:
+        count += 1
+print(count)
+
+#7.Remove spaces
+s = "hello world"
+result = ""
+for ch in s:
+    if ch != " ":
+        result += ch
+print(result)
+
+#8.First and last character
+s = "python"
+print("First:", s[0], "Last:", s[-1])
+
+#9.Palindrome check
+s = "madam"
+rev = ""
+for ch in s:
+    rev = ch + rev
+if s == rev:
+    print("Palindrome")
+else:
+    print("Not palindrome")
+
+#10.Count words
+s = "hello world python"
+words = s.split()
+print("Word count:", len(words))
+
+#11.Longest word
+s = "I love programming in Python"
+words = s.split()
+longest = ""
+for w in words:
+    if len(w) > len(longest):
+        longest = w
+print("Longest word:", longest)
+
+#12.Replace vowels with
+s = "hello world"
+vowels = "aeiouAEIOU"
+result = ""
+for ch in s:
+    if ch in vowels:
+        result += "*"
+    else:
+        result += ch
+print(result)
+
+#13.Check anagrams
+s1 = "listen"
+s2 = "silent"
+if sorted(s1) == sorted(s2):
+    print("Anagrams")
+else:
+    print("Not anagrams")
+
+#14.Remove duplicate characters
+s = "programming"
+result = ""
+for ch in s:
+    if ch not in result:
+        result += ch
+print(result)
+
+#15.Find duplicate characters
+s = "programming"
+seen = set()
+duplicates = set()
+for ch in s:
+    if ch in seen:
+        duplicates.add(ch)
+    else:
+        seen.add(ch)
+print("Duplicates:", "".join(duplicates))
+
+#16.Reverse each word (not full string)
+s = "hello world"
+words = s.split()
+result = ""
+for w in words:
+    rev = ""
+    for ch in w:
+        rev = ch + rev
+    result += rev + " "
+print(result.strip())
+
+#17.Check only digits
+s = "12345"
+if s.isdigit():
+    print("Only digits")
+else:
+    print("Contains non-digits")
+
+#18.Find index of substring (without .find())
+s = "hello world"
+sub = "world"
+index = -1
+for i in range(len(s) - len(sub) + 1):
+    if s[i:i+len(sub)] == sub:
+        index = i
+        break
+print("Index:", index)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
