@@ -1,0 +1,107 @@
+import mysql.connector
+
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="library"
+)
+
+cur = conn.cursor()
+
+def add_book():
+    title = input("Enter book title: ")
+    author = input("Enter author name: ")
+
+    cur.execute(
+        "INSERT INTO books (title, author) VALUES (%s, %s)",
+        (title, author)
+    )
+    conn.commit()
+    print("Book added successfully")
+
+def view_books():
+    cur.execute("SELECT * FROM books")
+    rows = cur.fetchall()
+
+    if not rows:
+        print("No books found")
+    else:
+        print("\nBooks List:")
+        for row in rows:
+            print(row)
+
+def issue_book():
+    book_id = int(input("Enter book ID: "))
+    member_name = input("Enter member name: ")
+    issue_date = input("Enter issue date (YYYY-MM-DD): ")
+    return_date = input("Enter return date (YYYY-MM-DD): ")
+
+    cur.execute(
+        "INSERT INTO issued_books (book_id, member_name, issue_date, return_date) VALUES (%s, %s, %s, %s)",
+        (book_id, member_name, issue_date, return_date)
+    )
+    cur.execute(
+        "UPDATE books SET status = 'issued' WHERE book_id = %s",
+        (book_id,)
+    )
+    conn.commit()
+    print("Book issued successfully")
+
+def return_book():
+    book_id = int(input("Enter book ID to return: "))
+
+    cur.execute(
+        "UPDATE books SET status = 'available' WHERE book_id = %s",
+        (book_id,)
+    )
+    cur.execute(
+        "DELETE FROM issued_books WHERE book_id = %s",
+        (book_id,)
+    )
+    conn.commit()
+    print("Book returned successfully")
+
+def search_book():
+    keyword = input("Enter title or author: ")
+    cur.execute(
+        "SELECT * FROM books WHERE title LIKE %s OR author LIKE %s",
+        (f"%{keyword}%", f"%{keyword}%")
+    )
+    rows = cur.fetchall()
+
+    if not rows:
+        print("No matching books found")
+    else:
+        for row in rows:
+            print(row)
+
+while True:
+    print("\n===== LIBRARY MANAGEMENT SYSTEM =====")
+    print("1. Add Book")
+    print("2. View Books")
+    print("3. Issue Book")
+    print("4. Return Book")
+    print("5. Search Book")
+    print("6. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        add_book()
+    elif choice == "2":
+        view_books()
+    elif choice == "3":
+        issue_book()
+    elif choice == "4":
+        return_book()
+    elif choice == "5":
+        search_book()
+    elif choice == "6":
+        print("Exiting...")
+        break
+    else:
+        print("Invalid choice")
+
+cur.close()
+conn.close()
