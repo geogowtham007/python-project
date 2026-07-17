@@ -1,0 +1,61 @@
+print("Hello World!")
+
+
+a, b = 10, 3
+print( a + b)
+print( a - b)
+print( a * b)
+print( a / b)
+print( a % b)
+
+
+num = 25
+print(num ** 0.5)
+
+
+base, height = 10, 5
+area = 0.5 * base * height
+print( area)
+
+
+a, b = 4, 2
+print((a + b) ** 2)
+print( (a - b) ** 2)
+print( (a ** 2 - b ** 2))
+
+
+x, y = 5, 10
+
+temp = x
+x = y
+y = temp
+print( x, y)
+
+
+x, y = 5, 10
+x, y = y, x
+print( x, y)
+
+
+km = 10
+miles = km * 0.63
+print( miles)
+
+
+celsius = 37
+fahrenheit = (celsius * 1.8) + 32
+print( fahrenheit)
+
+
+num = 1234
+print( num % 10)
+
+
+num = 1234
+print( num % 100)
+
+
+num = 54623
+md = (num // 100) % 10
+print("Square of", md, "is:", md ** 2)
+
