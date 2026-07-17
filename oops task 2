@@ -1,0 +1,561 @@
+from abc import ABC, abstractmethod
+import math
+
+# -------------------- CLASS & OBJECT --------------------
+
+class Student:
+    def __init__(self, sid, name, department, marks):
+        self.sid = sid
+        self.name = name
+        self.department = department
+        self.marks = marks
+
+    def display(self):
+        print(self.sid, self.name, self.department, self.marks)
+
+class Rectangle:
+    def __init__(self, length, breadth):
+        self.length = length
+        self.breadth = breadth
+
+    def area(self):
+        return self.length * self.breadth
+
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
+
+    def area(self):
+        return math.pi * self.radius * self.radius
+
+    def circumference(self):
+        return 2 * math.pi * self.radius
+
+class Employee:
+    def __init__(self, eid, name, designation, salary):
+        self.eid = eid
+        self.name = name
+        self.designation = designation
+        self.salary = salary
+
+    def display(self):
+        print(self.eid, self.name, self.designation, self.salary)
+
+class Car:
+    def __init__(self, brand, model, year, price):
+        self.brand = brand
+        self.model = model
+        self.year = year
+        self.price = price
+
+    def display(self):
+        print(self.brand, self.model, self.year, self.price)
+
+class Mobile:
+    def __init__(self, brand, storage, ram, price):
+        self.brand = brand
+        self.storage = storage
+        self.ram = ram
+        self.price = price
+
+    def display(self):
+        print(self.brand, self.storage, self.ram, self.price)
+
+class BankAccountSimple:
+    def __init__(self, acc_no, customer_name, balance):
+        self.acc_no = acc_no
+        self.customer_name = customer_name
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+
+    def withdraw(self, amount):
+        if amount <= self.balance:
+            self.balance -= amount
+        else:
+            print("Insufficient balance")
+
+    def display(self):
+        print(self.acc_no, self.customer_name, self.balance)
+
+class Book:
+    def __init__(self, book_id, title, author, category):
+        self.book_id = book_id
+        self.title = title
+        self.author = author
+        self.category = category
+
+    def display(self):
+        print(self.book_id, self.title, self.author, self.category)
+
+# -------------------- INHERITANCE --------------------
+
+class Animal:
+    def eat(self):
+        print("Animal eats")
+
+    def sleep(self):
+        print("Animal sleeps")
+
+class Dog(Animal):
+    def bark(self):
+        print("Dog barks")
+
+class Cat(Animal):
+    def meow(self):
+        print("Cat meows")
+
+class Bird(Animal):
+    def fly(self):
+        print("Bird flies")
+
+class VehicleBase:
+    def __init__(self, reg_no, fuel_type):
+        self.reg_no = reg_no
+        self.fuel_type = fuel_type
+
+class CarVehicle(VehicleBase):
+    def __init__(self, reg_no, fuel_type, seating_capacity):
+        super().__init__(reg_no, fuel_type)
+        self.seating_capacity = seating_capacity
+
+class Truck(VehicleBase):
+    def __init__(self, reg_no, fuel_type, load_capacity):
+        super().__init__(reg_no, fuel_type)
+        self.load_capacity = load_capacity
+
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+class StudentCollege(Person):
+    def __init__(self, name, age, roll_no, marks):
+        super().__init__(name, age)
+        self.roll_no = roll_no
+        self.marks = marks
+
+class EmployeePayroll:
+    def __init__(self, eid, name, salary):
+        self.eid = eid
+        self.name = name
+        self.salary = salary
+
+class Manager(EmployeePayroll):
+    def __init__(self, eid, name, salary, bonus):
+        super().__init__(eid, name, salary)
+        self.bonus = bonus
+
+class Supervisor(EmployeePayroll):
+    def __init__(self, eid, name, salary, allowance):
+        super().__init__(eid, name, salary)
+        self.allowance = allowance
+
+class ShapeBase:
+    pass
+
+class CircleShape(ShapeBase):
+    def __init__(self, radius):
+        self.radius = radius
+
+    def area(self):
+        return math.pi * self.radius * self.radius
+
+class RectangleShape(ShapeBase):
+    def __init__(self, length, breadth):
+        self.length = length
+        self.breadth = breadth
+
+    def area(self):
+        return self.length * self.breadth
+
+class Account:
+    def __init__(self, acc_no, name, balance):
+        self.acc_no = acc_no
+        self.name = name
+        self.balance = balance
+
+class SavingsAccount(Account):
+    def interest(self, rate):
+        return self.balance * rate / 100
+
+class CurrentAccount(Account):
+    def overdraft(self, limit):
+        return limit
+
+class PersonSchool:
+    def __init__(self, name):
+        self.name = name
+
+class Teacher(PersonSchool):
+    def teach(self):
+        print(self.name, "teaches")
+
+class StudentSchool(PersonSchool):
+    def study(self):
+        print(self.name, "studies")
+
+class Product:
+    def __init__(self, pid, name, price):
+        self.pid = pid
+        self.name = name
+        self.price = price
+
+class Electronics(Product):
+    def __init__(self, pid, name, price, warranty):
+        super().__init__(pid, name, price)
+        self.warranty = warranty
+
+class Clothing(Product):
+    def __init__(self, pid, name, price, size):
+        super().__init__(pid, name, price)
+        self.size = size
+
+# -------------------- POLYMORPHISM --------------------
+
+class Calculator:
+    def add(self, *args):
+        return sum(args)
+
+class GeoCircle:
+    def __init__(self, radius):
+        self.radius = radius
+
+    def area(self):
+        return math.pi * self.radius * self.radius
+
+class GeoRectangle:
+    def __init__(self, length, breadth):
+        self.length = length
+        self.breadth = breadth
+
+    def area(self):
+        return self.length * self.breadth
+
+class GeoTriangle:
+    def __init__(self, base, height):
+        self.base = base
+        self.height = height
+
+    def area(self):
+        return 0.5 * self.base * self.height
+
+class ZooAnimal:
+    def sound(self):
+        print("Animal sound")
+
+class ZooDog(ZooAnimal):
+    def sound(self):
+        print("Bark")
+
+class ZooCat(ZooAnimal):
+    def sound(self):
+        print("Meow")
+
+class ZooBird(ZooAnimal):
+    def sound(self):
+        print("Tweet")
+
+class Bike:
+    def start(self):
+        print("Bike starts with kick")
+
+class CarSim:
+    def start(self):
+        print("Car starts with key/button")
+
+class TruckSim:
+    def start(self):
+        print("Truck starts with heavy ignition")
+
+class UPI:
+    def pay(self):
+        print("Paid using UPI")
+
+class CreditCard:
+    def pay(self):
+        print("Paid using Credit Card")
+
+class Wallet:
+    def pay(self):
+        print("Paid using Wallet")
+
+class SavingsWithdraw:
+    def withdraw(self):
+        print("Savings account withdraw with limit check")
+
+class CurrentWithdraw:
+    def withdraw(self):
+        print("Current account withdraw with overdraft support")
+
+class ShapeDraw:
+    def draw(self):
+        print("Drawing shape")
+
+class CircleDraw(ShapeDraw):
+    def draw(self):
+        print("Drawing circle")
+
+class RectangleDraw(ShapeDraw):
+    def draw(self):
+        print("Drawing rectangle")
+
+# -------------------- ENCAPSULATION --------------------
+
+class StudentMarks:
+    def __init__(self, marks):
+        self.__marks = marks
+
+    def update_marks(self, new_marks):
+        if 0 <= new_marks <= 100:
+            self.__marks = new_marks
+
+    def get_marks(self):
+        return self.__marks
+
+class BankEncap:
+    def __init__(self, balance):
+        self.__balance = balance
+
+    def deposit(self, amount):
+        self.__balance += amount
+
+    def withdraw(self, amount):
+        if amount <= self.__balance:
+            self.__balance -= amount
+
+    def check_balance(self):
+        return self.__balance
+
+class EmployeeSalary:
+    def __init__(self, salary):
+        self.__salary = salary
+
+    def update_salary(self, new_salary):
+        if new_salary > 0:
+            self.__salary = new_salary
+
+    def get_salary(self):
+        return self.__salary
+
+class MobilePrice:
+    def __init__(self, price):
+        self.__price = price
+
+    def update_price(self, new_price):
+        if new_price > 0:
+            self.__price = new_price
+
+    def get_price(self):
+        return self.__price
+
+class CarPrice:
+    def __init__(self, price):
+        self.__price = price
+
+    def set_price(self, price):
+        if price > 0:
+            self.__price = price
+
+    def get_price(self):
+        return self.__price
+
+class Patient:
+    def __init__(self, name, illness):
+        self.__name = name
+        self.__illness = illness
+
+    def get_patient_info(self):
+        return self.__name, self.__illness
+
+# -------------------- ABSTRACTION --------------------
+
+class AbstractAnimal(ABC):
+    @abstractmethod
+    def sound(self):
+        pass
+
+class AbstractShape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class AbstractVehicle(ABC):
+    @abstractmethod
+    def start(self):
+        pass
+
+    @abstractmethod
+    def stop(self):
+        pass
+
+class FullTimeEmployee(ABC):
+    @abstractmethod
+    def salary(self):
+        pass
+
+class ContractEmployee(ABC):
+    @abstractmethod
+    def salary(self):
+        pass
+
+class Payment(ABC):
+    @abstractmethod
+    def pay(self):
+        pass
+
+class Device(ABC):
+    @abstractmethod
+    def operate(self):
+        pass
+
+class Notification(ABC):
+    @abstractmethod
+    def send(self):
+        pass
+
+# -------------------- DEMO OBJECTS --------------------
+
+students = [
+    Student(1, "Asha", "CSE", 89),
+    Student(2, "Ravi", "ECE", 76)
+]
+
+for s in students:
+    s.display()
+
+rect = Rectangle(10, 5)
+print(rect.area())
+
+cir = Circle(7)
+print(cir.area())
+print(cir.circumference())
+
+employees = [
+    Employee(101, "Arun", "Manager", 50000),
+    Employee(102, "Meena", "HR", 40000)
+]
+
+for e in employees:
+    e.display()
+
+cars = [
+    Car("Toyota", "Innova", 2024, 2800000),
+    Car("Honda", "City", 2023, 1600000)
+]
+
+for c in cars:
+    c.display()
+
+mobiles = [
+    Mobile("Samsung", "128GB", "8GB", 25000),
+    Mobile("Apple", "256GB", "6GB", 85000)
+]
+
+for m in mobiles:
+    m.display()
+
+acc = BankAccountSimple(123456, "Kumar", 10000)
+acc.deposit(2000)
+acc.withdraw(3000)
+acc.display()
+
+books = [
+    Book(1, "Python Basics", "John", "Programming"),
+    Book(2, "Maths Guide", "Alex", "Education")
+]
+
+for b in books:
+    b.display()
+
+d = Dog()
+c = Cat()
+b = Bird()
+d.eat(); d.sleep(); d.bark()
+c.eat(); c.sleep(); c.meow()
+b.eat(); b.sleep(); b.fly()
+
+v1 = CarVehicle("TN01AB1234", "Petrol", 5)
+v2 = Truck("TN02CD5678", "Diesel", 10000)
+print(v1.reg_no, v1.fuel_type, v1.seating_capacity)
+print(v2.reg_no, v2.fuel_type, v2.load_capacity)
+
+cs = StudentCollege("Priya", 20, "C101", 92)
+print(cs.name, cs.age, cs.roll_no, cs.marks)
+
+mgr = Manager(201, "Selvi", 60000, 10000)
+sup = Supervisor(202, "Rahul", 45000, 5000)
+print(mgr.name, mgr.salary, mgr.bonus)
+print(sup.name, sup.salary, sup.allowance)
+
+shapes = [CircleShape(4), RectangleShape(6, 3)]
+for sh in shapes:
+    print(sh.area())
+
+sa = SavingsAccount(1001, "Hari", 20000)
+ca = CurrentAccount(1002, "Karthik", 50000)
+print(sa.interest(5))
+print(ca.overdraft(10000))
+
+t = Teacher("Anu")
+st = StudentSchool("Kavin")
+t.teach()
+st.study()
+
+elec = Electronics(1, "Laptop", 70000, "2 years")
+cloth = Clothing(2, "Shirt", 1200, "L")
+print(elec.name, elec.warranty)
+print(cloth.name, cloth.size)
+
+calc = Calculator()
+print(calc.add(10, 20))
+print(calc.add(10, 20, 30))
+
+geo = [GeoCircle(3), GeoRectangle(4, 5), GeoTriangle(6, 7)]
+for g in geo:
+    print(g.area())
+
+animals = [ZooDog(), ZooCat(), ZooBird()]
+for an in animals:
+    an.sound()
+
+vehicles = [Bike(), CarSim(), TruckSim()]
+for v in vehicles:
+    v.start()
+
+payments = [UPI(), CreditCard(), Wallet()]
+for p in payments:
+    p.pay()
+
+withdraws = [SavingsWithdraw(), CurrentWithdraw()]
+for w in withdraws:
+    w.withdraw()
+
+drawables = [CircleDraw(), RectangleDraw()]
+for dr in drawables:
+    dr.draw()
+
+sm = StudentMarks(80)
+sm.update_marks(95)
+print(sm.get_marks())
+
+bank = BankEncap(1000)
+bank.deposit(500)
+bank.withdraw(200)
+print(bank.check_balance())
+
+es = EmployeeSalary(35000)
+es.update_salary(40000)
+print(es.get_salary())
+
+mp = MobilePrice(15000)
+mp.update_price(16000)
+print(mp.get_price())
+
+cp = CarPrice(500000)
+cp.set_price(550000)
+print(cp.get_price())
+
+patient = Patient("Mohan", "Fever")
+print(patient.get_patient_info())
