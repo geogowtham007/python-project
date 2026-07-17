@@ -1,0 +1,33 @@
+import numpy as np
+
+a = np.arange(1, 11)
+print(np.sum(a))
+print(np.max(a))
+print(np.min(a))
+print(a + 5)
+print(a * 2)
+print(np.sum(a[a % 2 == 0]))
+print(a[::-1])
+
+x = np.array([1, 2, 3])
+y = np.array([4, 5, 6])
+print(x + y)
+print(x - y)
+print(x * y)
+print(x / y)
+
+m = np.arange(1, 10).reshape(3, 3)
+print(np.sum(m, axis=1))
+print(np.sum(m, axis=0))
+print(np.sum(m))
+print(m + 10)
+print(m * 3)
+print(m.T)
+
+m1 = np.array([[1, 2, 3], [4, 5, 6]])
+m2 = np.array([[7, 8, 9], [10, 11, 12]])
+print(m1 + m2)
+print(m1 - m2)
+print(m1 * m2)
+print(np.max(m1, axis=1))
+print(np.min(m1, axis=0))
