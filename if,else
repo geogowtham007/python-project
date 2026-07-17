@@ -1,0 +1,172 @@
+a, b = 10, 20
+if a < b:
+    print( a)
+else:
+    print( b)
+
+
+if a > b:
+    print( a)
+else:
+    print( b)
+
+
+n = -15
+if n < 0:
+    print( -n)
+else:
+    print( n)
+
+
+n = 15
+if n % 2 == 0:
+    print("Even")
+else:
+    print("Odd")
+
+
+if n % 5 == 0:
+    print("Multiple of 5")
+else:
+    print("Not multiple of 5")
+
+
+if n % 10 == 0:
+    print("Multiple of 10")
+else:
+    print("Not multiple of 10")
+
+
+if 10 <= n <= 99:
+    print("Two-digit")
+else:
+    print("Not two-digit")
+
+
+if 100 <= n <= 999:
+    print("Three-digit")
+else:
+    print("Not three-digit")
+
+
+if n % 10 == 0:
+    print("Ends with zero")
+else:
+    print("Does not end with zero")
+
+
+n = 8
+if n**2 > 50:
+    print("Square above 50")
+else:
+    print("Square below 50")
+
+
+x, y = 15, 15
+diff = x - y
+if diff == 0:
+    print("Difference is 0")
+else:
+    print("Difference is not 0")
+
+
+marks = 45
+if marks >= 50:
+    print("Pass")
+else:
+    print("Fail")
+
+
+if n % 10 == 0:
+    print("Divisible by 10")
+else:
+    print("Not divisible by 10")
+
+
+num = 47
+d1, d2 = num // 10, num % 10
+if d1 > d2:
+    print( d1)
+else:
+    print( d2)
+
+
+choice = 1
+if choice == 1:
+    print("The exam will be easy")
+else:
+    print("The exam will be difficult")
+
+
+val = 1
+if val == 1:
+    print("You can go out and play")
+else:
+    print("You cannot go out and play")
+
+
+length, breadth = 5, 5
+if length == breadth:
+    print("Square")
+else:
+    print("Rectangle")
+
+
+ch = 65
+if 65 <= ch <= 90:
+    print("Uppercase ASCII")
+else:
+    print("Not uppercase")
+
+
+if 97 <= ch <= 122:
+    print("Lowercase ASCII")
+else:
+    print("Not lowercase")
+
+
+if 48 <= ch <= 57:
+    print("Numeric ASCII")
+else:
+    print("Not numeric")
+
+
+n = 15
+if n % 5 == 0 and n % 3 == 0:
+    print("Multiple of 5 and 3")
+else:
+    print("Not multiple of both")
+
+
+n = 120
+if 100 <= n <= 999 and n % 10 == 0:
+    print("Three-digit and multiple of 10")
+else:
+    print("Condition not met")
+
+
+if 100 <= n <= 999 and n % 2 == 0 and n % 5 == 0 and n % 10 == 0:
+    print("Three-digit and multiple of 2,5,10")
+else:
+    print("Condition not met")
+
+
+a, b = 4, 7
+if a % 2 == 0 and b % 2 == 0:
+    print( a * b)
+else:
+    print( a + b)
+
+
+class Buzz:
+    def __init__(self, num):
+        self.num = num
+
+    def check(self):
+        if self.num % 10 == 7 or self.num % 7 == 0:
+            print(self.num, )
+        else:
+            print(self.num, )
+
+obj = Buzz(1007)
+obj.check()
