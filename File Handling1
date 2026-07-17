@@ -1,0 +1,65 @@
+# 1. Student Details
+def save_student(id, name, marks):
+    with open("students.txt", "a") as f:
+        f.write(f"{id},{name},{marks}\n")
+
+def read_students():
+    with open("students.txt", "r") as f:
+        for line in f:
+            print(line.strip())
+
+save_student(1, "A", 90)
+save_student(2, "B", 85)
+read_students()
+
+# 2. Login System
+def register(username, password):
+    with open("users.txt", "a") as f:
+        f.write(f"{username},{password}\n")
+
+def login(username, password):
+    with open("users.txt", "r") as f:
+        for line in f:
+            u, p = line.strip().split(",")
+            if u == username and p == password:
+                print("Login successful")
+                return
+    print("Invalid user")
+
+register("user1", "pass1")
+login("user1", "pass1")
+login("user2", "wrong")
+
+# 3. Attendance
+def mark_attendance(date, name, status):
+    with open("attendance.txt", "a") as f:
+        f.write(f"{date},{name},{status}\n")
+
+def read_attendance(date):
+    with open("attendance.txt", "r") as f:
+        for line in f:
+            d, n, s = line.strip().split(",")
+            if d == date:
+                print(n, s)
+
+mark_attendance("2026-06-11", "A", "Present")
+mark_attendance("2026-06-11", "B", "Absent")
+read_attendance("2026-06-11")
+
+# 4. Bank Transactions
+def deposit(amount):
+    with open("bank.txt", "a") as f:
+        f.write(f"Deposit,{amount}\n")
+
+def withdraw(amount):
+    with open("bank.txt", "a") as f:
+        f.write(f"Withdraw,{amount}\n")
+
+def history():
+    with open("bank.txt", "r") as f:
+        for line in f:
+            print(line.strip())
+
+deposit(1000)
+withdraw(500)
+history()
