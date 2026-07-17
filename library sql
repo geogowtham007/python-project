@@ -1,0 +1,449 @@
+import mysql.connector
+from mysql.connector import Error, IntegrityError
+from datetime import date
+
+
+class Database:
+    def __init__(self, host="localhost", user="root", password="", database="library_db"):
+        self.config = {
+            "host": host,
+            "user": user,
+            "password": password,
+            "database": database
+        }
+
+    def get_connection(self):
+        return mysql.connector.connect(**self.config)
+
+
+class Book:
+    def __init__(self, db):
+        self.db = db
+
+    def add_book(self, title, author, isbn, copies):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO books (title, author, isbn, copies, available_copies) VALUES (%s, %s, %s, %s, %s)",
+                (title, author, isbn, copies, copies)
+            )
+            conn.commit()
+            print("Book added successfully.")
+        except IntegrityError:
+            print("Book already exists or invalid ISBN.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def view_books(self):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM books")
+            rows = cursor.fetchall()
+            if rows:
+                for row in rows:
+                    print(row)
+            else:
+                print("No books found.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def search_book(self, keyword):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            q = "SELECT * FROM books WHERE title LIKE %s OR author LIKE %s OR isbn LIKE %s"
+            val = f"%{keyword}%"
+            cursor.execute(q, (val, val, val))
+            rows = cursor.fetchall()
+            if rows:
+                for row in rows:
+                    print(row)
+            else:
+                print("No matching books found.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def update_book(self, book_id, title, author, isbn, copies):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE books
+                SET title=%s, author=%s, isbn=%s, copies=%s, available_copies=%s
+                WHERE book_id=%s
+                """,
+                (title, author, isbn, copies, copies, book_id)
+            )
+            conn.commit()
+            if cursor.rowcount > 0:
+                print("Book updated successfully.")
+            else:
+                print("Book not found.")
+        except IntegrityError:
+            print("Update failed: ISBN already exists.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def delete_book(self, book_id):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM books WHERE book_id=%s", (book_id,))
+            conn.commit()
+            if cursor.rowcount > 0:
+                print("Book deleted successfully.")
+            else:
+                print("Book not found.")
+        except IntegrityError:
+            print("Cannot delete book: it is referenced by a transaction.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+
+class Member:
+    def __init__(self, db):
+        self.db = db
+
+    def add_member(self, name, email, phone):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO members (name, email, phone) VALUES (%s, %s, %s)",
+                (name, email, phone)
+            )
+            conn.commit()
+            print("Member added successfully.")
+        except IntegrityError:
+            print("Member already exists or invalid email.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def view_members(self):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM members")
+            rows = cursor.fetchall()
+            if rows:
+                for row in rows:
+                    print(row)
+            else:
+                print("No members found.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def update_member(self, member_id, name, email, phone):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE members
+                SET name=%s, email=%s, phone=%s
+                WHERE member_id=%s
+                """,
+                (name, email, phone, member_id)
+            )
+            conn.commit()
+            if cursor.rowcount > 0:
+                print("Member updated successfully.")
+            else:
+                print("Member not found.")
+        except IntegrityError:
+            print("Update failed: email already exists.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def delete_member(self, member_id):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM members WHERE member_id=%s", (member_id,))
+            conn.commit()
+            if cursor.rowcount > 0:
+                print("Member deleted successfully.")
+            else:
+                print("Member not found.")
+        except IntegrityError:
+            print("Cannot delete member: it is referenced by a transaction.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+
+class Library:
+    def __init__(self, db):
+        self.db = db
+
+    def issue_book(self, member_id, book_id):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT member_id FROM members WHERE member_id=%s", (member_id,))
+            if cursor.fetchone() is None:
+                print("Member not found.")
+                return
+
+            cursor.execute("SELECT available_copies FROM books WHERE book_id=%s", (book_id,))
+            result = cursor.fetchone()
+
+            if result is None:
+                print("Book not found.")
+                return
+
+            if result[0] <= 0:
+                print("No copies available.")
+                return
+
+            cursor.execute(
+                "INSERT INTO transactions (member_id, book_id, issue_date, status) VALUES (%s, %s, %s, 'issued')",
+                (member_id, book_id, date.today())
+            )
+            cursor.execute(
+                "UPDATE books SET available_copies = available_copies - 1 WHERE book_id=%s",
+                (book_id,)
+            )
+            conn.commit()
+            print("Book issued successfully.")
+        except IntegrityError:
+            print("Issue failed due to database constraint.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def return_book(self, transaction_id):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+
+            cursor.execute(
+                "SELECT book_id, status FROM transactions WHERE transaction_id=%s",
+                (transaction_id,)
+            )
+            row = cursor.fetchone()
+
+            if row is None:
+                print("Transaction not found.")
+                return
+
+            book_id, status = row
+            if status == "returned":
+                print("Book already returned.")
+                return
+
+            cursor.execute(
+                "UPDATE transactions SET return_date=%s, status='returned' WHERE transaction_id=%s",
+                (date.today(), transaction_id)
+            )
+            cursor.execute(
+                "UPDATE books SET available_copies = available_copies + 1 WHERE book_id=%s",
+                (book_id,)
+            )
+            conn.commit()
+            print("Book returned successfully.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    def view_transactions(self):
+        conn = None
+        cursor = None
+        try:
+            conn = self.db.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM transactions")
+            rows = cursor.fetchall()
+            if rows:
+                for row in rows:
+                    print(row)
+            else:
+                print("No transactions found.")
+        except Error as e:
+            print("Error:", e)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+
+def menu():
+    print("\n===== Library Management System =====")
+    print("1. Add Book")
+    print("2. View Books")
+    print("3. Search Book")
+    print("4. Update Book")
+    print("5. Delete Book")
+    print("6. Add Member")
+    print("7. View Members")
+    print("8. Update Member")
+    print("9. Delete Member")
+    print("10. Issue Book")
+    print("11. Return Book")
+    print("12. View Transactions")
+    print("13. Exit")
+
+
+def main():
+    db = Database(host="localhost", user="root", password="", database="library_db")
+    book_obj = Book(db)
+    member_obj = Member(db)
+    library_obj = Library(db)
+
+    while True:
+        menu()
+        choice = input("Enter choice: ")
+
+        try:
+            if choice == "1":
+                title = input("Title: ")
+                author = input("Author: ")
+                isbn = input("ISBN: ")
+                copies = int(input("Copies: "))
+                book_obj.add_book(title, author, isbn, copies)
+
+            elif choice == "2":
+                book_obj.view_books()
+
+            elif choice == "3":
+                keyword = input("Enter title/author/isbn: ")
+                book_obj.search_book(keyword)
+
+            elif choice == "4":
+                book_id = int(input("Book ID: "))
+                title = input("New Title: ")
+                author = input("New Author: ")
+                isbn = input("New ISBN: ")
+                copies = int(input("New Copies: "))
+                book_obj.update_book(book_id, title, author, isbn, copies)
+
+            elif choice == "5":
+                book_id = int(input("Book ID: "))
+                book_obj.delete_book(book_id)
+
+            elif choice == "6":
+                name = input("Name: ")
+                email = input("Email: ")
+                phone = input("Phone: ")
+                member_obj.add_member(name, email, phone)
+
+            elif choice == "7":
+                member_obj.view_members()
+
+            elif choice == "8":
+                member_id = int(input("Member ID: "))
+                name = input("New Name: ")
+                email = input("New Email: ")
+                phone = input("New Phone: ")
+                member_obj.update_member(member_id, name, email, phone)
+
+            elif choice == "9":
+                member_id = int(input("Member ID: "))
+                member_obj.delete_member(member_id)
+
+            elif choice == "10":
+                member_id = int(input("Member ID: "))
+                book_id = int(input("Book ID: "))
+                library_obj.issue_book(member_id, book_id)
+
+            elif choice == "11":
+                transaction_id = int(input("Transaction ID: "))
+                library_obj.return_book(transaction_id)
+
+            elif choice == "12":
+                library_obj.view_transactions()
+
+            elif choice == "13":
+                print("Exiting...")
+                break
+
+            else:
+                print("Invalid choice.")
+
+        except ValueError:
+            print("Please enter valid numeric input.")
+        except Exception as e:
+            print("Unexpected error:", e)
+
+
+if __name__ == "__main__":
+    main()
