@@ -1,0 +1,37 @@
+import matplotlib.pyplot as plt
+
+x = [1,2,3,4,5]
+y = [60,65,70,80,90]
+plt.plot(x, y)
+plt.title("Student Progress")
+plt.xlabel("Tests")
+plt.ylabel("Marks")
+plt.show()
+
+days = [1,2,3,4,5,6,7]
+temp = [30,32,31,35,36,34,33]
+plt.plot(days, temp, marker='o')
+plt.show()
+
+mobiles = ['Samsung','Vivo','Apple','Oppo']
+sales = [50,40,70,35]
+plt.bar(mobiles, sales)
+plt.show()
+
+students = ['A','B','C','D']
+attendance = [90,85,95,80]
+plt.bar(students, attendance)
+plt.xlabel("Students")
+plt.ylabel("Attendance")
+plt.show()
+
+labels = ['Food','Travel','Shopping','Rent']
+amount = [3000,2000,1500,4000]
+plt.pie(amount, labels=labels, autopct='%1.1f%%')
+plt.show()
+
+height = [150,155,160,165,170]
+weight = [50,55,60,65,72]
+plt.scatter(height, weight, marker='x')
+plt.title("Height vs Weight")
+plt.show()
