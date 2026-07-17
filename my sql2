@@ -1,0 +1,301 @@
+import mysql.connector
+from mysql.connector import Error
+
+class ChatDatabaseMySQL:
+    def __init__(self, host='localhost', user='root', password='', database='chat_app'):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
+        self.init_database()
+
+    def get_connection(self, use_db=True):
+        try:
+            if use_db:
+                return mysql.connector.connect(
+                    host=self.host,
+                    user=self.user,
+                    password=self.password,
+                    database=self.database
+                )
+            return mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password
+            )
+        except Error as e:
+            print(f"MySQL connection error: {e}")
+            return None
+
+    def init_database(self):
+        conn = self.get_connection(use_db=False)
+        if not conn:
+            raise Exception("Could not connect to MySQL")
+
+        cursor = conn.cursor()
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.database}")
+        cursor.execute(f"USE {self.database}")
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS messages (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                sender_id INT NOT NULL,
+                receiver_id INT NOT NULL,
+                message TEXT NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                is_read BOOLEAN DEFAULT 0,
+                FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def create_user(self, username):
+        conn = self.get_connection()
+        if not conn:
+            return False
+        try:
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO users (username) VALUES (%s)", (username,))
+            conn.commit()
+            return True
+        except Error as e:
+            print(f"Create user error: {e}")
+            return False
+        finally:
+            conn.close()
+
+    def get_user_id(self, username):
+        conn = self.get_connection()
+        if not conn:
+            return None
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+            row = cursor.fetchone()
+            return row[0] if row else None
+        finally:
+            conn.close()
+
+    def get_username(self, user_id):
+        conn = self.get_connection()
+        if not conn:
+            return None
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT username FROM users WHERE id = %s", (user_id,))
+            row = cursor.fetchone()
+            return row[0] if row else None
+        finally:
+            conn.close()
+
+    def send_message(self, sender_username, receiver_username, message):
+        sender_id = self.get_user_id(sender_username)
+        receiver_id = self.get_user_id(receiver_username)
+
+        if not sender_id or not receiver_id:
+            print("Invalid sender or receiver")
+            return False
+        if sender_id == receiver_id:
+            print("You cannot send message to yourself")
+            return False
+
+        conn = self.get_connection()
+        if not conn:
+            return False
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO messages (sender_id, receiver_id, message)
+                VALUES (%s, %s, %s)
+            """, (sender_id, receiver_id, message))
+            conn.commit()
+            return True
+        except Error as e:
+            print(f"Send message error: {e}")
+            return False
+        finally:
+            conn.close()
+
+    def get_conversation(self, user1, user2):
+        user1_id = self.get_user_id(user1)
+        user2_id = self.get_user_id(user2)
+
+        if not user1_id or not user2_id:
+            return []
+
+        conn = self.get_connection()
+        if not conn:
+            return []
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT sender_id, receiver_id, message, timestamp, is_read
+                FROM messages
+                WHERE (sender_id = %s AND receiver_id = %s)
+                   OR (sender_id = %s AND receiver_id = %s)
+                ORDER BY timestamp ASC
+            """, (user1_id, user2_id, user2_id, user1_id))
+            return cursor.fetchall()
+        finally:
+            conn.close()
+
+    def mark_as_read(self, receiver_username, sender_username):
+        receiver_id = self.get_user_id(receiver_username)
+        sender_id = self.get_user_id(sender_username)
+
+        if not receiver_id or not sender_id:
+            return
+
+        conn = self.get_connection()
+        if not conn:
+            return
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE messages
+                SET is_read = 1
+                WHERE receiver_id = %s AND sender_id = %s AND is_read = 0
+            """, (receiver_id, sender_id))
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_unread_count(self, username):
+        user_id = self.get_user_id(username)
+        if not user_id:
+            return 0
+
+        conn = self.get_connection()
+        if not conn:
+            return 0
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT COUNT(*)
+                FROM messages
+                WHERE receiver_id = %s AND is_read = 0
+            """, (user_id,))
+            return cursor.fetchone()[0]
+        finally:
+            conn.close()
+
+
+class ChatApp:
+    def __init__(self, db):
+        self.db = db
+        self.current_user = None
+
+    def register(self):
+        username = input("Enter new username: ").strip()
+        if not username:
+            print("Username cannot be empty")
+            return
+        if self.db.create_user(username):
+            print("User created successfully")
+        else:
+            print("Could not create user")
+
+    def login(self):
+        username = input("Enter username: ").strip()
+        user_id = self.db.get_user_id(username)
+        if user_id:
+            self.current_user = username
+            print(f"Welcome, {username}")
+        else:
+            print("User not found")
+
+    def send_message(self):
+        receiver = input("Send to: ").strip()
+        message = input("Message: ").strip()
+        if not receiver or not message:
+            print("Receiver and message cannot be empty")
+            return
+        if self.db.send_message(self.current_user, receiver, message):
+            print("Message sent")
+        else:
+            print("Failed to send message")
+
+    def view_conversation(self):
+        other_user = input("View conversation with: ").strip()
+        msgs = self.db.get_conversation(self.current_user, other_user)
+
+        if not msgs:
+            print("No messages found")
+            return
+
+        print("\n--- Conversation ---")
+        for sender_id, receiver_id, message, timestamp, is_read in msgs:
+            sender_name = self.db.get_username(sender_id)
+            time_str = str(timestamp).split('.')[0]
+            label = "You" if sender_name == self.current_user else sender_name
+            print(f"[{time_str}] {label}: {message}")
+
+        self.db.mark_as_read(self.current_user, other_user)
+
+    def check_unread(self):
+        count = self.db.get_unread_count(self.current_user)
+        print(f"Unread messages: {count}")
+
+    def run(self):
+        while True:
+            if not self.current_user:
+                print("\n1. Register")
+                print("2. Login")
+                print("3. Exit")
+                choice = input("Choose: ").strip()
+
+                if choice == "1":
+                    self.register()
+                elif choice == "2":
+                    self.login()
+                elif choice == "3":
+                    print("Goodbye")
+                    break
+                else:
+                    print("Invalid choice")
+            else:
+                print(f"\nLogged in as: {self.current_user}")
+                print("1. Send Message")
+                print("2. View Conversation")
+                print("3. Check Unread")
+                print("4. Logout")
+                choice = input("Choose: ").strip()
+
+                if choice == "1":
+                    self.send_message()
+                elif choice == "2":
+                    self.view_conversation()
+                elif choice == "3":
+                    self.check_unread()
+                elif choice == "4":
+                    self.current_user = None
+                    print("Logged out")
+                else:
+                    print("Invalid choice")
+
+
+if __name__ == "__main__":
+    db = ChatDatabaseMySQL(
+        host='localhost',
+        user='root',
+        password='',
+        database='chat_app'
+    )
+    app = ChatApp(db)
+    app.run()
