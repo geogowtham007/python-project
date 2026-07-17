@@ -1,0 +1,92 @@
+class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def area(self):
+        return self.width * self.height
+
+    def perimeter(self):
+        return 2 * (self.width + self.height)
+
+
+rect = Rectangle(10, 5)
+print("Area:", rect.area())
+print("Perimeter:", rect.perimeter())
+
+
+
+
+
+
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def display(self):
+        print("Name:", self.name)
+        print("Age:", self.age)
+
+
+
+p1 = Person("Alice", 25)
+p2 = Person("Bob", 30)
+
+
+p1.display()
+p2.display()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class BankAccount:
+    def __init__(self, accountNumber, name, balance):
+        self.accountNumber = accountNumber
+        self.name = name
+        self.balance = balance
+
+    def Deposit(self, amount):
+        self.balance += amount
+        print(f"Deposited ₹{amount}. New balance: ₹{self.balance}")
+
+    def Withdrawal(self, amount):
+        if amount <= self.balance:
+            self.balance -= amount
+            print(f"Withdrew ₹{amount}. New balance: ₹{self.balance}")
+        else:
+            print("Insufficient balance!")
+
+    def bankFees(self):
+        fees = self.balance * 0.05
+        self.balance -= fees
+        print(f"Bank fees of {fees} applied. New balance: {self.balance}")
+
+    def display(self):
+        print(f"Account Number: {self.accountNumber}")
+        print(f"Account Holder: {self.name}")
+        print(f"Balance: {self.balance}")
+
+
+# Example usage
+acc = BankAccount(12345, "M", 10000)
+acc.display()
+acc.Deposit(2000)
+acc.Withdrawal(1500)
+acc.bankFees()
+acc.display()
